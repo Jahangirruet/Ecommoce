@@ -11,7 +11,7 @@ import * as ProductController from '../app/controllers/ProductController.js';
 router.get('/ProductBrandList',ProductController.ProductBrandList)
 router.get('/ProductCategoryList',ProductController.ProductCategoryList)
  router.get('/ProductSliderList',ProductController.ProductSliderList)
-// router.get('/ProductListByBrand/:BrandID',ProductController.ProductListByBrand)
+ router.get('/ProductListByBrand/:BrandID',ProductController.ProductListByBrand)
 // router.get('/ProductListByCategory/:CategoryID',ProductController.ProductListByCatagory)
 // router.get('/ProductListBySimilier/:Keyword',ProductController.ProductListBySimilier)
 // router.get('/ProductListByKeyword/:Keyword',ProductController.ProductListByKeyword)

@@ -2,7 +2,7 @@ import {
   BrandListService,
   CategoryListService,
    SliderListService,
-//   ListByBrandService,
+  ListByBrandService,
 //   ListByCatagoryService,
 //   ListBySimilierService,
 //   ListByKeywordService,
@@ -26,7 +26,10 @@ export const ProductBrandList = async function (req, res) {
     return res.status(200).json(result)
  };
 
-// export const ProductListByBrand = async function (req, res) {};
+ export const ProductListByBrand = async function (req, res) {
+   let result = await ListByBrandService(req)
+    return res.status(200).json(result)
+ };
 
 // export const ProductListByCatagory = async function (req, res) {};
 
