@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import bodyParser from "body-parser";
+//import bodyParser from "body-parser";
 import cors from "cors";
 import helmet from "helmet";
 import hpp from "hpp";
@@ -28,8 +28,8 @@ const app = express();
 const port = PORT;
 
 // APP MIDDLEWARES
-app.use(bodyParser.urlencoded());
-app.use(bodyParser.json());
+////app.use(bodyParser.urlencoded());
+//app.use(bodyParser.json());
 app.use(cors());
 app.use(helmet());
 app.use(hpp());
@@ -53,7 +53,7 @@ mongoose
     console.log("Database connected successfully");
   })
   .catch((err) => {
-    console.log(err);
+    console.log("err");
   });
 
 app.listen(port, () => {
