@@ -5,10 +5,10 @@ import {
   ListByBrandService,
   ListByCatagoryService,
   ListBySimilierService,
-  //ListByKeywordService,
+  ListByKeywordService,
   ListByRemarkService,
   DetailsService,
- //ReviewListService,
+ ReviewListService,
 } from "../services/ProductServices.js";
 
 export const ProductBrandList = async function (req, res) {

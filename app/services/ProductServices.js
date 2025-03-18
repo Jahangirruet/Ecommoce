@@ -3,8 +3,8 @@ import CategoryModel from "../models/CategoryModel.js";
 import ProductModel from "../models/ProductModel.js";
 import ProductSliderModel from "../models/ProductSliderModel.js";
 import ProductDetailModel from "../models/ProductDetailsModel.js";
-// import ProductReviewModel from '../models/ProductReviewModel.js';
-// import ReviewModel from '../models/ReviewModel.js';
+//import ProductReviewModel from '../models/ReviewModel.js';
+import ReviewModel from '../models/ReviewModel.js';
 import mongoose from "mongoose";
 
 const ObjectID = mongoose.Types.ObjectId;
@@ -103,7 +103,6 @@ export const ListByCatagoryService = async (req) => {
     };
     let UnwindBranStage = { $unwind: "$brand" };
     let UnwindCategoryStage = { $unwind: "$category" };
-
     let ProjectionStage = {
       $project: {
         "brand._id": 0,
@@ -128,7 +127,7 @@ export const ListByCatagoryService = async (req) => {
   }
 };
 
-export const ListBySimilierService = async (params) => {
+export const ListBySimilierService = async (req) => {
   try {
     let CategoryID = new ObjectID(req.params.CategoryID);
     let MatchStage = { $match: { categoryID: CategoryID } };
@@ -177,12 +176,53 @@ export const ListBySimilierService = async (params) => {
   }
 };
 
-const ListByKeywordService = async (params) => {
+export const ListByKeywordService = async (req) => {
   let SerchRegex = { $regex: req.params.Keyword, $option: "i" };
   let SearchParams = [{ title: SerchRegex }, { shortDes: SerchRegex }];
   let searchStage = { $or: SearchParams };
 
   let MatchStage = {$match:{}}
+
+  let JoinWithBrandStage = {
+    $lookup: {
+      from: "brands",
+      localField: "brandID",
+      foreignField: "_id",
+      as: "brand",
+    },
+  };
+  let JoinWithCategoryStage = {
+    $lookup: {
+      from: "categories",
+      localField: "categoryID",
+      foreignField: "_id",
+      as: "category",
+    },
+  };
+  let UnwindBranStage = { $unwind: "$brand" };
+  let UnwindCategoryStage = { $unwind: "$category" };
+
+  let ProjectionStage = {
+    $project: {
+      "brand._id": 0,
+      "category._id": 0,
+      "categoryID": 0,
+      "brandID": 0,
+    },
+  };
+  
+    let data = await ProductModel.aggregate([
+      MatchStage,
+      //searchStage,
+      JoinWithBrandStage,
+      JoinWithCategoryStage,
+      UnwindBranStage,
+      UnwindCategoryStage,
+      ProjectionStage,
+    ]);
+    //console.log(data)
+    return { status: "success", data: data };
+  
 
 };
 
@@ -233,7 +273,7 @@ export const ListByRemarkService = async (req) => {
   }
 };
 
-export const DetailsService = async () => {
+export const DetailsService = async (req) => {
   try {
     let ProductID = new ObjectID(req.params.ProductID);
     let MatchStage = { $match: { _id: ProductID } };
@@ -259,18 +299,20 @@ export const DetailsService = async () => {
         from: "productdetails",
         localField: "_id",
         foreignField: "productID",
-        as: "category",
+        as: "details",
       },
     };
 
     let UnwindBranStage = { $unwind: "$brand" };
     let UnwindCategoryStage = { $unwind: "$category" };
-    let UnwindDetailsStage = { $unwind: "$detail" };
+    let UnwindDetailsStage = { $unwind: "$details" };
 
     let ProjectionStage = {
       $project: {
         "brand._id": 0,
         "category._id": 0,
+        "categoryID": 0,
+        "brandID": 0,
       },
     };
 
@@ -290,9 +332,30 @@ export const DetailsService = async () => {
   }
 };
 
-// const ReviewListService = async (params) => {
+export const ReviewListService = async (req) => {
+  try {
+    let ProductID = new ObjectID(req.params.ProductID);
+    let MatchStage = { $match: { productID: ProductID } };
 
-// }
+    let JoinWithProfileStage = {
+      $lookup: {
+        from: "profiles",
+        localField: "userID",
+        foreignField: "userID",
+        as: "profile",
+      },
+    };
+
+    let data = await ReviewModel.aggregate([
+      MatchStage,
+      JoinWithProfileStage
+    ]);
+    return { status: "success", data: data };
+  }
+  catch (error) {
+    return { status: "fail", data: error }.toString();
+  }
+}
 
 export default {
   BrandListService,
@@ -302,4 +365,7 @@ export default {
   ListByCatagoryService,
   DetailsService,
   ListByKeywordService,
+  ListBySimilierService,
+  ReviewListService,
+  ListByRemarkService
 };
