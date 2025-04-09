@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 
 import * as ProductController from '../app/controllers/ProductController.js';
-// import * as UserController from '../app/controllers/UserController.js';
+import * as UserController from '../app/controllers/UserController.js';
 // import AuthMiddleware from '../app/middlewares/AuthMiddleware.js';
 
 
@@ -18,6 +18,11 @@ router.get('/ProductCategoryList',ProductController.ProductCategoryList)
  router.get('/ProductListByRemark/:Remark',ProductController.ProductListByRemark)
 router.get('/ProductDetails/:ProductID',ProductController.ProductDetails)
 router.get('/ProductReviewList/:ProductID',ProductController.ProductReviewList)
+
+// Users
+
+router.get('/userotp/:email',UserController.UserOTP)
+
 
 
 

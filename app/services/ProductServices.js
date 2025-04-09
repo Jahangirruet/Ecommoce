@@ -346,9 +346,20 @@ export const ReviewListService = async (req) => {
       },
     };
 
+    let UnwindProfileStage = { $unwind: "$profile" };
+    let ProjectionStage = {
+      $project: {
+        'des': 1,
+        'rating': 1,
+        'profile.cus_name': 1,
+      },
+    }
+
     let data = await ReviewModel.aggregate([
       MatchStage,
-      JoinWithProfileStage
+      JoinWithProfileStage,
+      UnwindProfileStage,
+      ProjectionStage
     ]);
     return { status: "success", data: data };
   }
